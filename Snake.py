@@ -3,7 +3,11 @@ import pygame
 import tkinter as tk
 from tkinter import messagebox
 
+
 class cube(object):
+    """
+    Cube represents a building block of the snake.
+    """
     rows = 20
     w = 500
     def __init__(self, start,color=(255,0,0)):
@@ -13,11 +17,13 @@ class cube(object):
         self.color = color
 
     def move(self, dirnx, dirny):
+        # Receives x and y coordinates and updates "pos" position.
         self.dirnx = dirnx
         self.dirny = dirny
         self.pos = (self.pos[0] + self.dirnx, self.pos[1] + self.dirny)
 
     def draw(self, surface, eyes=False):
+        # Receives surface and eyes and draws the cube if eyes = True then cube is snake face with eyes.
         dis = self.w // self.rows
         i = self.pos[0]
         j = self.pos[1]
@@ -31,8 +37,11 @@ class cube(object):
             pygame.draw.circle(surface, (0, 0, 0), circle_middle, radius)
             pygame.draw.circle(surface, (0, 0, 0), circle_middle2, radius)
 
-class snake(object):
 
+class snake(object):
+    """
+    Main object of the game, build by one or many cubes.
+    """
     body = []
     turns = {}
 
@@ -44,6 +53,7 @@ class snake(object):
         self.dirny = 1
 
     def move(self):
+    #Defines how the snake moves depending on keyboard input.
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -90,6 +100,7 @@ class snake(object):
                 else: c.move(c.dirnx, c.dirny)
 
     def reset(self, pos):
+        # In case of loss restarts the game setting up initial conditions.
         self.head = cube(pos)
         self.body = []
         self.body.append(self.head)
@@ -98,6 +109,7 @@ class snake(object):
         self.dirny = 1
 
     def addCube(self):
+        # Adds Cube to Snake.
         tail = self.body[-1]
         dx, dy = tail.dirnx, tail.dirny
 
@@ -114,6 +126,7 @@ class snake(object):
         self.body[-1].dirny = dy
 
     def draw(self, surface):
+        # Draw snake
         for i, c in enumerate(self.body):
             if i == 0:
                 c.draw(surface, True)
@@ -121,6 +134,7 @@ class snake(object):
                 c.draw(surface)
 
 def drawGrid(w, rows, surface):
+    # Draw initial grid in the game window with indicated "w" width and rows.
     sizeBtwn = w//rows
 
     x = 0
@@ -133,6 +147,7 @@ def drawGrid(w, rows, surface):
         pygame.draw.line(surface, (0, 0, 0), (0, y), (w, y))
 
 def redrawWindow(surface):
+    # Draws game window each time positions change.
     global rows, width, s, snack
     surface.fill((0, 0, 0))
     s.draw(surface)
@@ -141,6 +156,7 @@ def redrawWindow(surface):
     pygame.display.update()
 
 def randomSnack(rows, item):
+    # Places food inside game window in a random position.
     positions = item.body
 
     while True:
@@ -153,6 +169,7 @@ def randomSnack(rows, item):
     return (x,y)
 
 def nessage_box(subject, content):
+    # Creates message box with game is lost with input "subject" and "content".
     root = tk.Tk()
     root.attributes("-topmost", True)
     root.withdraw()
